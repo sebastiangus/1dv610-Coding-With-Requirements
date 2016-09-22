@@ -1,5 +1,7 @@
 <?php
 
+namespace view;
+
 class LoginView {
 	private static $login = 'LoginView::Login';
 	private static $logout = 'LoginView::Logout';
@@ -9,8 +11,8 @@ class LoginView {
 	private static $cookiePassword = 'LoginView::CookiePassword';
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
+    private static $responseMessage = '';
 
-	
 
 	/**
 	 * Create HTTP response
@@ -20,10 +22,7 @@ class LoginView {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		$message = '';
-		
-		$response = $this->generateLoginFormHTML($message);
-		//$response .= $this->generateLogoutButtonHTML($message);
+        $response = $this->generateLoginFormHTML(self::$responseMessage);
 		return $response;
 	}
 
@@ -42,13 +41,12 @@ class LoginView {
 	}
 	
 	/**
-	* Generate HTML code on the output buffer for the logout button
-	* @param $message, String output message
-	* @return  void, BUT writes to standard output!
+	* @param $message, String output message the message you want to render/display to the user.
+	* @return  HTML formatted string
 	*/
 	private function generateLoginFormHTML($message) {
 		return '
-			<form method="post" > 
+			<form action="index.php" method="post"> 
 				<fieldset>
 					<legend>Login - enter Username and password</legend>
 					<p id="' . self::$messageId . '">' . $message . '</p>
@@ -57,7 +55,7 @@ class LoginView {
 					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="" />
 
 					<label for="' . self::$password . '">Password :</label>
-					<input type="password" id="' . self::$password . '" name="' . self::$password . '" />
+					<input type="password" id="' . self::$password . '" name="' . self::$password . '" value="" />
 
 					<label for="' . self::$keep . '">Keep me logged in  :</label>
 					<input type="checkbox" id="' . self::$keep . '" name="' . self::$keep . '" />
@@ -67,10 +65,39 @@ class LoginView {
 			</form>
 		';
 	}
-	
-	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
-	private function getRequestUserName() {
-		//RETURN REQUEST VARIABLE: USERNAME
-	}
-	
+
+
+    public function getRequestUserName() {
+        if(isset($_REQUEST[self::$name])) {
+            $name = $_REQUEST[self::$name];
+            unset($_REQUEST[self::$name]);
+            return $name;
+        }
+
+    }
+
+
+    public function  getRequestPassword() {
+        if(isset($_REQUEST[self::$password])) {
+            $password = $_REQUEST[self::$password];
+            unset($_REQUEST[self::$password]);
+            return $password;
+        }
+    }
+
+
+    public function setResponseMessage(string $message) {
+        self::$responseMessage = $message;
+    }
+
+
+    public function userNameOrPasswordIsset(){
+        if(isset($_POST[self::$name]) || isset($_POST[self::$password])){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+
 }
