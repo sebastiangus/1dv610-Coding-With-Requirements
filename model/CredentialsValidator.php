@@ -23,7 +23,7 @@ class CredentialValidator extends \model\Credentials {
     }
 
 
-    public function validateInput() {
+    public function isValidateInput() {
         if(!$this->isUsernameValidFormat()) {
             $this->response = self::$usernameMissingResponse;
             return FALSE;
@@ -57,6 +57,7 @@ class CredentialValidator extends \model\Credentials {
 
 
     private function isInputStringAndLongerThanZero($input) : bool {
+
         if (is_string($input) && strlen($input) > 0) {
             return TRUE;
         } else {

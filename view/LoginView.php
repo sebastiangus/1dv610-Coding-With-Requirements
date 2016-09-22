@@ -12,6 +12,7 @@ class LoginView {
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
     private static $responseMessage = '';
+    private static $username;
 
 
 	/**
@@ -52,7 +53,7 @@ class LoginView {
 					<p id="' . self::$messageId . '">' . $message . '</p>
 					
 					<label for="' . self::$name . '">Username :</label>
-					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="" />
+					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="' . self::$username . '" />
 
 					<label for="' . self::$password . '">Password :</label>
 					<input type="password" id="' . self::$password . '" name="' . self::$password . '" value="" />
@@ -69,9 +70,7 @@ class LoginView {
 
     public function getRequestUserName() {
         if(isset($_REQUEST[self::$name])) {
-            $name = $_REQUEST[self::$name];
-            unset($_REQUEST[self::$name]);
-            return $name;
+            return $_REQUEST[self::$name];
         }
 
     }
@@ -79,9 +78,7 @@ class LoginView {
 
     public function  getRequestPassword() {
         if(isset($_REQUEST[self::$password])) {
-            $password = $_REQUEST[self::$password];
-            unset($_REQUEST[self::$password]);
-            return $password;
+            return $_REQUEST[self::$password];
         }
     }
 
@@ -99,5 +96,8 @@ class LoginView {
         }
     }
 
+    public function setUsername(){
+        self::$username = $_REQUEST[self::$name];
+    }
 
 }
