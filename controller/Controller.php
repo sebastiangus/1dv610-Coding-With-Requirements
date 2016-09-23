@@ -13,16 +13,26 @@ class Controller
 {
     private $loginView;
 
-    public function validateCredentialsAndSaveUsername(\view\LoginView $view) {
+    public function login(\view\LoginView $view) {
+        //GET LOGIN CREDENTIALS FROM VIEW
         $this->loginView = $view;
         $username = $this->loginView->getRequestUserName();
         $password = $this->loginView->getRequestPassword();
 
-        //SAVES USERNAME IN VIEW, SO IT WILL BE DISPLAYED NEXT TIME RENDERED.
-        $view ->setUsername();
         $validator = new \model\CredentialValidator($username, $password);
-        $validator->isValidateInput();
-        $view->setResponseMessage($validator->getValidationResponseMessage());
+
+        if($validator->isValidInput()){
+
+        } else {
+            //SET CURRENCT USERNAME IN VIEW, MAKES IT POSSIBLE TO KEEP SAME INPUT IN USERNAME FIELD AT NEXT RENDERING.
+            $view ->setUsername();
+
+            $view->setResponseMessage($validator->getValidationResponseMessage());
+        };
+    }
+
+    public function  authorize(){
+
     }
 
 

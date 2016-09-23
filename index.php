@@ -22,7 +22,7 @@ $controller = new \controller\Controller($v);
 
 
 if($v->userNameOrPasswordIsset()) {
-        $controller->validateCredentialsAndSaveUsername($v);
+        $controller->login($v);
         $lv->render(false, $v, $dtv);
 } else {
     $lv->render(false, $v, $dtv);

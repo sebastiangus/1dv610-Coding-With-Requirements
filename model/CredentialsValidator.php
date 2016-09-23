@@ -23,7 +23,7 @@ class CredentialValidator extends \model\Credentials {
     }
 
 
-    public function isValidateInput() {
+    public function isValidInput() {
         if(!$this->isUsernameValidFormat()) {
             $this->response = self::$usernameMissingResponse;
             return FALSE;
