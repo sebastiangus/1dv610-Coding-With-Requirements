@@ -12,6 +12,7 @@ namespace controller;
 class Controller
 {
     private $loginView;
+    private $credentials;
 
     public function login(\view\LoginView $view) {
         //GET LOGIN CREDENTIALS FROM VIEW
@@ -22,7 +23,8 @@ class Controller
         $validator = new \model\CredentialValidator($username, $password);
 
         if($validator->isValidInput()){
-
+            $this->credentials = $validator->getCredentials();
+            $this->authorize();
         } else {
             //SET CURRENCT USERNAME IN VIEW, MAKES IT POSSIBLE TO KEEP SAME INPUT IN USERNAME FIELD AT NEXT RENDERING.
             $view ->setUsername();

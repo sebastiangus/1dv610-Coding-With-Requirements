@@ -15,6 +15,7 @@ class CredentialValidator extends \model\Credentials {
     private $username = '';
     private $password = '';
     private $response;
+    private $credentialsValidated = FALSE;
 
 
     function __construct(string $user, string $pass) {
@@ -34,6 +35,7 @@ class CredentialValidator extends \model\Credentials {
         }
 
         $this->response = '';
+        $this->credentialsValidated = TRUE;
         return TRUE;
     }
 
@@ -68,6 +70,15 @@ class CredentialValidator extends \model\Credentials {
 
     public function getValidationResponseMessage(){
         return $this->response;
+    }
+
+
+    public function getCredentials() {
+        if($this->credentialsValidated){
+        return new \model\Credentials($this->username, $this->password);
+        } else {
+            throw new Error('Credentials not validated');
+        }
     }
 
 }
