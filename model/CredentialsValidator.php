@@ -34,7 +34,7 @@ class CredentialValidator extends \model\Credentials {
             return FALSE;
         }
 
-        $this->response = '';
+        $this->response = 'Validated format on credentials';
         $this->credentialsValidated = TRUE;
         return TRUE;
     }
