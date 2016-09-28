@@ -8,32 +8,25 @@
 
 namespace model;
 
-class DatabaseConnection
+abstract class DatabaseConnection
 {
-    private $mysqli;
+    protected $mysqli;
+
+    private $DATABASE_NAME = "1dv610";
 
 
-    public function __constructor() {
+    public function __construct() {
+        $this->establishConnection();
+        $this->prepareTable();
+    }
+
+    private function establishConnection() {
         //http://php.net/manual/en/function.mysql-connect.php
-        $this->mysqli = new mysqli('127.0.0.1', '1dv610', '1dv610', '1dv610');
+        $this->mysqli = new \mysqli('127.0.0.1', '1dv610', '1dv610', $this->DATABASE_NAME);
 
         if ($this->mysqli->connect_errno)
         {
             echo 'Failed to connect to MySQL: (' . $this->mysqli->connect_errno . ') ' . $this->mysqli->connect_error;
         }
     }
-
-
-    public function getCount() {
-        echo $this->mysqli->query("SELECT COUNT(*) FROM 1dv610");
-    }
-
-
-    public function getConnectionInformation() {
-        echo 'Test';
-        $info = $this->mysqli->host_info . '\n';
-        var_dump($info);
-        echo $info;
-    }
-
 }

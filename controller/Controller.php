@@ -8,29 +8,25 @@
 
 namespace controller;
 
-require_once('./model/DatabaseConnection.php');
+require_once('./model/UserDAL.php');
 
 class Controller
 {
     private $loginView;
-    private $credentials;
     private $databaseConnection;
-
-    public function init() {
-        $this->databaseConnection = new \model\DatabaseConnection();
-    }
-
 
     public function login(\view\LoginView $view) {
         //GET LOGIN CREDENTIALS FROM VIEW
-        $username = $this->view->getRequestUserName();
-        $password = $this->view->getRequestPassword();
+        $this->loginView = $view;
+        $username = $this->loginView->getRequestUserName();
+        $password = $this->loginView->getRequestPassword();
 
         $validator = new \model\CredentialValidator($username, $password);
 
+
         if($validator->isValidInput()){
-            $this->credentials = $validator->getCredentials();
-            $this->authorize($this->credentials);
+            $credentials = $validator->getCredentials();
+            $this->authorize($credentials);
         } else {
             //SET CURRENCT USERNAME IN VIEW, MAKES IT POSSIBLE TO KEEP SAME INPUT IN USERNAME FIELD AT NEXT RENDERING.
             $view ->setUsername();
@@ -38,10 +34,8 @@ class Controller
         };
     }
 
-
-    public function  authorize(\model\Credentials $credentials){
-
+    private function authorize(){
+        $this->databaseConnection = new \model\UserDAL();
+        $this->databaseConnection->addData();
     }
-
-
 }
