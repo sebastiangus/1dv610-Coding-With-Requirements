@@ -9,4 +9,5 @@ boxes/*
 #Database Connection
 **/login*
 login.php
+Settings.php
 credentials.php

@@ -8,12 +8,13 @@
 
 namespace model;
 
+use settings\Settings;
+
+require_once('Settings.php.default');
+
 abstract class DatabaseConnection
 {
     protected $mysqli;
-
-    private $DATABASE_NAME = "1dv610";
-
 
     public function __construct() {
         $this->establishConnection();
@@ -22,7 +23,7 @@ abstract class DatabaseConnection
 
     private function establishConnection() {
         //http://php.net/manual/en/function.mysql-connect.php
-        $this->mysqli = new \mysqli('127.0.0.1', '1dv610', '1dv610', $this->DATABASE_NAME);
+        $this->mysqli = new \mysqli(Settings::$LOCALHOST, Settings::$DB_USER, Settings::$DB_PASSWORD, Settings::$DB_NAME);
 
         if ($this->mysqli->connect_errno)
         {

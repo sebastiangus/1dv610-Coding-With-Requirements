@@ -9,12 +9,14 @@
 
 namespace model;
 
+use settings\Settings;
+
 require_once('DatabaseConnection.php');
+require_once('Settings.php.default');
 
 class UserDAL extends DatabaseConnection
 {
     private $credentials;
-    private $DATABASE_TABLE = "users";
     private $userList;
 
     public function __construct(\model\Credentials $c)
@@ -31,7 +33,7 @@ class UserDAL extends DatabaseConnection
         //http://dev.mysql.com/doc/refman/5.7/en/create-table.html
         //Password field needs to be at least 255 characters long to be future proof acording to http://php.net/manual/en/function.password-hash.php
         $this->mysqli->query("
-        CREATE TABLE IF NOT EXISTS $this->DATABASE_TABLE (
+        CREATE TABLE IF NOT EXISTS" . Settings::$DB_TABLE ." (
         id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(100),
         password VARCHAR(255))
@@ -88,9 +90,8 @@ class UserDAL extends DatabaseConnection
     //http://us2.php.net/manual/en/function.mysql-fetch-array.php
     //http://php.net/manual/en/mysqli-result.fetch-array.php
     private function getUsers(){
-        $this->userList = $this->mysqli->query("SELECT username from $this->DATABASE_TABLE");
+        $this->userList = $this->mysqli->query("SELECT username from " . Settings::$DB_TABLE);
         $this->userList = mysqli_fetch_all($this->userList, MYSQLI_NUM);
-
     }
 
 }

@@ -1,0 +1,16 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: sebastiangustavsson
+ * Date: 2016-09-28
+ * Time: 15:31
+ */
+namespace settings;
+
+class Settings {
+public static $LOCALHOST = "127.0.0.1";
+public static $DB_USER = "USER";
+public static $DB_PASSWORD = "PASSWORD";
+public static $DB_NAME = "DATABASE_NAME";
+public static $DB_TABLE = "TABLE_NAME";
+}
