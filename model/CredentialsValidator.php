@@ -26,12 +26,14 @@ class CredentialValidator extends \model\Credentials {
 
     public function isValidInput() {
         if(!$this->isUsernameValidFormat()) {
-            $this->response = self::$usernameMissingResponse;
-            return FALSE;
+            //$this->response = self::$usernameMissingResponse;
+            //return FALSE;
+            throw new \Exception(self::$usernameMissingResponse);
         }
         if(!$this->isPasswordValidFormat()) {
-            $this->response = self::$passwordMissingResponse;
-            return FALSE;
+            //$this->response = self::$passwordMissingResponse;
+            //return FALSE;
+            throw new \Exception(self::$passwordMissingResponse);
         }
 
         $this->response = 'Validated format on credentials';

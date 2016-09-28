@@ -8,12 +8,12 @@
 
 namespace controller;
 
-require_once('./model/UserDAL.php');
+require_once('./model/Authorization.php');
 
 class Controller
 {
     private $loginView;
-    private $databaseConnection;
+    private $userDB;
 
     public function login(\view\LoginView $view) {
         //GET LOGIN CREDENTIALS FROM VIEW
@@ -23,19 +23,18 @@ class Controller
 
         $validator = new \model\CredentialValidator($username, $password);
 
-
-        if($validator->isValidInput()){
+        try {
+            $validator->isValidInput();
             $credentials = $validator->getCredentials();
             $this->authorize($credentials);
-        } else {
+        } catch (\Exception $exception) {
             //SET CURRENCT USERNAME IN VIEW, MAKES IT POSSIBLE TO KEEP SAME INPUT IN USERNAME FIELD AT NEXT RENDERING.
-            $view ->setUsername();
-            $view->setResponseMessage($validator->getValidationResponseMessage());
-        };
+            $view->setUsername();
+            $view->setResponseMessage($exception->getMessage());
+        }
     }
 
-    private function authorize(){
-        $this->databaseConnection = new \model\UserDAL();
-        $this->databaseConnection->addData();
+    private function authorize(\model\Credentials $credentials){
+        $this->authorization = new \model\Authorization($credentials);
     }
 }

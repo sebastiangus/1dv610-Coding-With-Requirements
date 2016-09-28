@@ -15,4 +15,17 @@ class Credentials {
         self::$username = $username;
         self::$password = $password;
     }
+
+    public function getUsername() : string {
+        return self::$username;
+    }
+
+    public function getPassword() : string {
+        return self::$password;
+    }
+
+    //http://php.net/manual/en/faq.passwords.php
+    public function getHashedPassword(){
+        return password_hash(self::$password, PASSWORD_DEFAULT);
+    }
 }
