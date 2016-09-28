@@ -9,10 +9,8 @@
 
 namespace model;
 
-use settings\Settings;
-
 require_once('DatabaseConnection.php');
-require_once('Settings.php.default');
+require_once('Settings.php');
 
 class UserDAL extends DatabaseConnection
 {
@@ -33,7 +31,7 @@ class UserDAL extends DatabaseConnection
         //http://dev.mysql.com/doc/refman/5.7/en/create-table.html
         //Password field needs to be at least 255 characters long to be future proof acording to http://php.net/manual/en/function.password-hash.php
         $this->mysqli->query("
-        CREATE TABLE IF NOT EXISTS" . Settings::$DB_TABLE ." (
+        CREATE TABLE IF NOT EXISTS" . \settings\Settings::$DB_TABLE ." (
         id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(100),
         password VARCHAR(255))

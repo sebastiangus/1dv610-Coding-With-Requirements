@@ -8,9 +8,7 @@
 
 namespace model;
 
-use settings\Settings;
-
-require_once('Settings.php.default');
+require_once('Settings.php');
 
 abstract class DatabaseConnection
 {
@@ -23,7 +21,7 @@ abstract class DatabaseConnection
 
     private function establishConnection() {
         //http://php.net/manual/en/function.mysql-connect.php
-        $this->mysqli = new \mysqli(Settings::$LOCALHOST, Settings::$DB_USER, Settings::$DB_PASSWORD, Settings::$DB_NAME);
+        $this->mysqli = new \mysqli(\settings\Settings::$LOCALHOST, \settings\Settings::$DB_USER, \settings\Settings::$DB_PASSWORD, \settings\Settings::$DB_NAME);
 
         if ($this->mysqli->connect_errno)
         {
