@@ -15,7 +15,6 @@ class Authorization
     private $userDAL;
     private static $USER_DO_NOT_EXIST_OR_WRONG_PASSWORD = "Wrong name or password";
     private static $isAuthorized = FALSE;
-    private static $sessionID;
 
 
     public function __construct(\model\Credentials $credentials) {
@@ -31,6 +30,7 @@ class Authorization
         if(!$this->userDAL->isMatchingPasswordForUser()){
             throw new \Exception(self::$USER_DO_NOT_EXIST_OR_WRONG_PASSWORD);
         } else {
+            session_start();
             self::$isAuthorized = TRUE;
         }
     }
