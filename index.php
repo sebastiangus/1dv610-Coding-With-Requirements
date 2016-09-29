@@ -22,7 +22,12 @@ $controller = new \controller\Controller($v);
 
 if($v->userNameOrPasswordIsset()) {
         $controller->login($v);
-        $lv->render(false, $v, $dtv);
+        if($controller->isLoggedIn()) {
+            $v->setToLoggedInView();
+            $lv->render(true, $v, $dtv);
+        } else {
+            $lv->render(false, $v, $dtv);
+         }
 } else {
     $lv->render(false, $v, $dtv);
 }

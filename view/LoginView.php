@@ -12,6 +12,7 @@ class LoginView {
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
     private static $responseMessage = '';
+    private static $loggedInViewActive = FALSE;
     private static $username;
 
 
@@ -24,6 +25,9 @@ class LoginView {
 	 */
 	public function response() {
         $response = $this->generateLoginFormHTML(self::$responseMessage);
+        if(self::$loggedInViewActive) {
+            $response = $this->generateLoggedInHTML();
+        }
 		return $response;
 	}
 
@@ -67,6 +71,10 @@ class LoginView {
 		';
 	}
 
+	private function generateLoggedInHTML(){
+	    return $this->generateLogoutButtonHTML('Welcome');
+    }
+
 
     public function getRequestUserName() {
         if(isset($_REQUEST[self::$name])) {
@@ -98,6 +106,10 @@ class LoginView {
 
     public function setUsername(){
         self::$username = $_REQUEST[self::$name];
+    }
+
+    public function setToLoggedInView(){
+        self::$loggedInViewActive = TRUE;
     }
 
 }

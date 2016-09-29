@@ -22,7 +22,7 @@ class UserDAL extends DatabaseConnection
         parent::__construct();
         $this->credentials = $c;
         $this->prepareTable();
-        $this->getUsers();
+        $this->fetchUserList();
         //TODO: REMOVE THIS LINE! Temporary ADD USER FUNCTIONALITY
         //$this->addUser($c);
     }
@@ -87,7 +87,7 @@ class UserDAL extends DatabaseConnection
 
     //http://us2.php.net/manual/en/function.mysql-fetch-array.php
     //http://php.net/manual/en/mysqli-result.fetch-array.php
-    private function getUsers(){
+    private function fetchUserList(){
         $this->userList = $this->mysqli->query("SELECT username from " . Settings::$DB_TABLE);
         $this->userList = mysqli_fetch_all($this->userList, MYSQLI_NUM);
     }
