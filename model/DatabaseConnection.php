@@ -19,6 +19,7 @@ abstract class DatabaseConnection
         $this->prepareTable();
     }
 
+
     private function establishConnection() {
         //http://php.net/manual/en/function.mysql-connect.php
         $this->mysqli = new \mysqli(Settings::$LOCALHOST, Settings::$DB_USER, Settings::$DB_PASSWORD, Settings::$DB_NAME);

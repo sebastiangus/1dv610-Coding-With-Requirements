@@ -17,10 +17,12 @@ class Authorization
     private static $isAuthorized = FALSE;
     private static $sessionID;
 
+
     public function __construct(\model\Credentials $credentials) {
         $this->userDAL = new \model\UserDAL($credentials);
         $this->authFlow();
     }
+
 
     private function authFlow() {
         if(!$this->userDAL->userExists()) {
@@ -33,11 +35,13 @@ class Authorization
         }
     }
 
+
     public function isAuthorized() {
         return self::$isAuthorized;
     }
 
-    public function getSessionID() {
+
+    public function set() {
 
     }
 

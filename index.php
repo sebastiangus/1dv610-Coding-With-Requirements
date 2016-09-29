@@ -20,6 +20,7 @@ $lv = new LayoutView();
 
 $controller = new \controller\Controller($v);
 
+
 if($v->userNameOrPasswordIsset()) {
         $controller->login($v);
         if($controller->isLoggedIn()) {

@@ -16,6 +16,7 @@ class Controller
     private $userDB;
     private $auth;
 
+
     public function login(\view\LoginView $view) {
         //GET LOGIN CREDENTIALS FROM VIEW
         $this->loginView = $view;
@@ -35,9 +36,11 @@ class Controller
         }
     }
 
+
     private function authorize(\model\Credentials $credentials){
         $this->auth = new \model\Authorization($credentials);
     }
+
 
     public function isLoggedIn(){
         if($this->auth !== null){

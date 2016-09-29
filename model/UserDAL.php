@@ -27,6 +27,7 @@ class UserDAL extends DatabaseConnection
         //$this->addUser($c);
     }
 
+
     protected function prepareTable(){
         //http://dev.mysql.com/doc/refman/5.7/en/create-table.html
         //Password field needs to be at least 255 characters long to be future proof acording to http://php.net/manual/en/function.password-hash.php
@@ -52,6 +53,7 @@ class UserDAL extends DatabaseConnection
         }
     }
 
+
     public function userExists() {
         $checkForThisUsername = $this->credentials->getUsername();
 
@@ -63,6 +65,7 @@ class UserDAL extends DatabaseConnection
             }
         }
     }
+
 
     //http://php.net/manual/en/mysqli.prepare.php
     public function isMatchingPasswordForUser(){
@@ -84,6 +87,7 @@ class UserDAL extends DatabaseConnection
         };
 
     }
+
 
     //http://us2.php.net/manual/en/function.mysql-fetch-array.php
     //http://php.net/manual/en/mysqli-result.fetch-array.php

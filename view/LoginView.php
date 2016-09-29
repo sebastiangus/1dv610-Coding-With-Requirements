@@ -14,6 +14,7 @@ class LoginView {
     private static $responseMessage = '';
     private static $loggedInViewActive = FALSE;
     private static $username;
+    private $session;
 
 
 	/**
@@ -30,6 +31,7 @@ class LoginView {
         }
 		return $response;
 	}
+
 
 	/**
 	* Generate HTML code on the output buffer for the logout button
@@ -71,8 +73,15 @@ class LoginView {
 		';
 	}
 
+
 	private function generateLoggedInHTML(){
-	    return $this->generateLogoutButtonHTML('Welcome');
+	    //http://stackoverflow.com/questions/4290230/php-detect-page-refresh
+        $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
+	    if($pageRefreshed) {
+            return $this->generateLogoutButtonHTML('');
+        } else {
+            return $this->generateLogoutButtonHTML('Welcome');
+        }
     }
 
 
@@ -80,7 +89,6 @@ class LoginView {
         if(isset($_REQUEST[self::$name])) {
             return $_REQUEST[self::$name];
         }
-
     }
 
 
