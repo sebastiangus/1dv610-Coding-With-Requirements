@@ -15,20 +15,9 @@ ini_set('display_errors', 'On');
 //CREATE OBJECTS OF THE VIEWS
 $v = new \view\LoginView();
 $dtv = new DateTimeView();
-$lv = new LayoutView();
-
+$lv = new LayoutView($v, $dtv);
 
 $controller = new \controller\Controller($v);
+$controller->init();
 
-
-if($v->userNameOrPasswordIsset()) {
-        $controller->login($v);
-        if($controller->isLoggedIn()) {
-            $v->setToLoggedInView();
-            $lv->render(true, $v, $dtv);
-        } else {
-            $lv->render(false, $v, $dtv);
-         }
-} else {
-    $lv->render(false, $v, $dtv);
-}
+$lv->render();

@@ -9,30 +9,24 @@ namespace model;
 
 require_once('Credentials.php');
 
-class CredentialValidator extends \model\Credentials {
+class CredentialValidator extends Credentials {
     private static $usernameMissingResponse = 'Username is missing';
     private static $passwordMissingResponse = 'Password is missing';
-    private $username = '';
-    private $password = '';
     private $response;
     private $credentialsValidated = FALSE;
+    private $credentials;
 
 
     function __construct(string $user, string $pass) {
-        $this->username = $user;
-        $this->password = $pass;
+        $this->credentials = new Credentials($user, $pass);
     }
 
 
     public function isValidInput() {
         if(!$this->isUsernameValidFormat()) {
-            //$this->response = self::$usernameMissingResponse;
-            //return FALSE;
             throw new \Exception(self::$usernameMissingResponse);
         }
         if(!$this->isPasswordValidFormat()) {
-            //$this->response = self::$passwordMissingResponse;
-            //return FALSE;
             throw new \Exception(self::$passwordMissingResponse);
         }
 
@@ -42,8 +36,9 @@ class CredentialValidator extends \model\Credentials {
     }
 
 
+
     private function isUsernameValidFormat() : bool {
-        if($this->isInputStringAndLongerThanZero($this->username)) {
+        if($this->isInputStringAndLongerThanZero($this->credentials->getUsername())) {
             return TRUE;
         } else {
             return FALSE;
@@ -52,7 +47,7 @@ class CredentialValidator extends \model\Credentials {
 
 
     private function  isPasswordValidFormat() : bool {
-        if($this->isInputStringAndLongerThanZero($this->password)) {
+        if($this->isInputStringAndLongerThanZero($this->credentials->getPassword())) {
             return TRUE;
         } else {
             return FALSE;
@@ -77,9 +72,9 @@ class CredentialValidator extends \model\Credentials {
 
     public function getCredentials() {
         if($this->credentialsValidated){
-        return new \model\Credentials($this->username, $this->password);
+        return $this->credentials;
         } else {
-            throw new Error('Credentials not validated');
+            throw new \Exception('Credentials not validated');
         }
     }
 

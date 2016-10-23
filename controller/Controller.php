@@ -16,10 +16,24 @@ class Controller
     private $userDB;
     private $auth;
 
-
-    public function login(\view\LoginView $view) {
-        //GET LOGIN CREDENTIALS FROM VIEW
+    public function __construct(\view\LoginView $view)
+    {
         $this->loginView = $view;
+    }
+
+    public function init(){
+        if($this->loginView->userNameOrPasswordIsset()) {
+            $this->login();
+        }
+
+        if($this->isLoggedIn()) {
+            $this->loginView->setToLoggedInView();
+        }
+    }
+
+
+    public function login() {
+        //GET LOGIN CREDENTIALS FROM VIEW
         $username = $this->loginView->getRequestUserName();
         $password = $this->loginView->getRequestPassword();
 
@@ -31,8 +45,8 @@ class Controller
             $this->authorize($credentials);
         } catch (\Exception $exception) {
             //SET CURRENCT USERNAME IN VIEW, MAKES IT POSSIBLE TO KEEP SAME INPUT IN USERNAME FIELD AT NEXT RENDERING.
-            $view->setUsername();
-            $view->setResponseMessage($exception->getMessage());
+            $this->loginView->setUsername();
+            $this->loginView->setResponseMessage($exception->getMessage());
         }
     }
 

@@ -39,10 +39,4 @@ class Authorization
     public function isAuthorized() {
         return self::$isAuthorized;
     }
-
-
-    public function set() {
-
-    }
-
 }

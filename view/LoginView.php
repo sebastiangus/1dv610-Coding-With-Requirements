@@ -70,7 +70,7 @@ class LoginView {
 					<input type="submit" name="' . self::$login . '" value="login" />
 				</fieldset>
 			</form>
-		';
+			';
 	}
 
 
@@ -120,4 +120,11 @@ class LoginView {
         self::$loggedInViewActive = TRUE;
     }
 
+    public function isloggedIn(){
+        return self::$loggedInViewActive;
+    }
+
+    public function getSessionId(){
+        echo $_COOKIE['PHPSESSID'];
+    }
 }

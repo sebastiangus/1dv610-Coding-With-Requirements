@@ -2,8 +2,16 @@
 
 
 class LayoutView {
-  
-  public function render($isLoggedIn, \view\LoginView $v, DateTimeView $dtv) {
+    private $loginView;
+    private $dateTimeView;
+
+    public function __construct(\view\LoginView $v, DateTimeView $dtv)
+    {
+        $this->loginView = $v;
+        $this->dateTimeView = $dtv;
+    }
+
+    public function render() {
     echo '<!DOCTYPE html>
       <html>
         <head>
@@ -12,20 +20,20 @@ class LayoutView {
         </head>
         <body>
           <h1>Assignment 2</h1>
-          ' . $this->renderIsLoggedIn($isLoggedIn) . '
+          ' . $this->renderIsLoggedIn() . '
           
           <div class="container">
-              ' . $v->response() . '
+              ' . $this->loginView->response() . '
               
-              ' . $dtv->show() . '
+              ' . $this->dateTimeView->show() . '
           </div>
          </body>
       </html>
     ';
   }
   
-  private function renderIsLoggedIn($isLoggedIn) {
-    if ($isLoggedIn) {
+  private function renderIsLoggedIn() {
+    if ($this->loginView->isLoggedIn()) {
       return '<h2>Logged in</h2>';
     }
     else {

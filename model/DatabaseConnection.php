@@ -16,7 +16,6 @@ abstract class DatabaseConnection
 
     public function __construct() {
         $this->establishConnection();
-        $this->prepareTable();
     }
 
 
