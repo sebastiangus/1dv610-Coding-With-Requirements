@@ -63,4 +63,10 @@ class Controller
             return FALSE;
         }
     }
+
+    private function getSessionId(){
+        if(isset($_COOKIE['PHPSESSID'])){
+            return $_COOKIE['PHPSESSID'];
+        }
+    }
 }

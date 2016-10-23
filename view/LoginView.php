@@ -14,7 +14,6 @@ class LoginView {
     private static $responseMessage = '';
     private static $loggedInViewActive = FALSE;
     private static $username;
-    private $session;
 
 
 	/**
@@ -122,9 +121,5 @@ class LoginView {
 
     public function isloggedIn(){
         return self::$loggedInViewActive;
-    }
-
-    public function getSessionId(){
-        echo $_COOKIE['PHPSESSID'];
     }
 }
