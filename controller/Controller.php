@@ -10,6 +10,7 @@ namespace controller;
 
 use model\CredentialValidator;
 use model\SessionTracker;
+use MongoDB\Driver\Server;
 
 require_once('./model/Authorization.php');
 require_once('./model/SessionTracker.php');
@@ -50,6 +51,11 @@ class Controller
             $this->restoreSession();
         }
 
+        if(isset($_SESSION['message'])){
+            $this->loginView->setResponseMessage($_SESSION['message']);
+            session_destroy();
+        }
+
         $this->layoutView->render();
     }
 
@@ -75,6 +81,9 @@ class Controller
 
     public function logout(){
         session_destroy();
+        session_start();
+        //TODO: remove string dependency
+        $_SESSION['message'] = 'Bye bye';
         //http://stackoverflow.com/questions/15411978/how-to-redirect-user-from-php-file-back-to-index-html-on-dreamhost
         header('Location: index.php');
     }
