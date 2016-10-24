@@ -82,7 +82,7 @@ class Controller
         session_destroy();
         session_start();
         //TODO: remove string dependency
-        $_SESSION['message'] = 'Bye bye';
+        $_SESSION['message'] = 'Bye bye!';
         //http://stackoverflow.com/questions/15411978/how-to-redirect-user-from-php-file-back-to-index-html-on-dreamhost
         header('Location: index.php');
     }
