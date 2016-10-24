@@ -53,7 +53,6 @@ class Controller
 
         if(isset($_SESSION['message'])){
             $this->loginView->setResponseMessage($_SESSION['message']);
-            session_destroy();
         }
 
         $this->layoutView->render();
