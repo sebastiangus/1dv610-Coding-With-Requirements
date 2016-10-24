@@ -30,7 +30,6 @@ class Authorization
         if(!$this->userDAL->isMatchingPasswordForUser()){
             throw new \Exception(self::$USER_DO_NOT_EXIST_OR_WRONG_PASSWORD);
         } else {
-            session_start();
             self::$isAuthorized = TRUE;
         }
     }

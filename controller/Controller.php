@@ -8,20 +8,35 @@
 
 namespace controller;
 
+use model\CredentialValidator;
+use model\SessionTracker;
+
 require_once('./model/Authorization.php');
+require_once('./model/SessionTracker.php');
+require_once('RequestHandler.php');
 
 class Controller
 {
     private $loginView;
+    private $layoutView;
     private $userDB;
     private $auth;
+    private $sessionTracker;
+    private $requestHandler;
 
-    public function __construct(\view\LoginView $view)
+    public function __construct(\view\LoginView $view, $lv)
     {
+        session_start();
         $this->loginView = $view;
+        $this->layoutView = $lv;
+        $this->sessionTracker = new SessionTracker();
+        $this->requestHandler = new RequestHandler($this);
+
     }
 
     public function init(){
+        $this->requestHandler->checkForRequestAttribute();
+
         if($this->loginView->userNameOrPasswordIsset()) {
             $this->login();
         }
@@ -29,6 +44,13 @@ class Controller
         if($this->isLoggedIn()) {
             $this->loginView->setToLoggedInView();
         }
+
+        if($this->sessionTracker->sessionCredentialsIsSet()) {
+            $this->loginView->setToLoggedInView();
+            $this->restoreSession();
+        }
+
+        $this->layoutView->render();
     }
 
 
@@ -43,11 +65,23 @@ class Controller
             $validator->isValidInput();
             $credentials = $validator->getCredentials();
             $this->authorize($credentials);
+            $this->sessionTracker->saveCredentialsToSession($credentials);
         } catch (\Exception $exception) {
             //SET CURRENCT USERNAME IN VIEW, MAKES IT POSSIBLE TO KEEP SAME INPUT IN USERNAME FIELD AT NEXT RENDERING.
             $this->loginView->setUsername();
             $this->loginView->setResponseMessage($exception->getMessage());
         }
+    }
+
+    public function logout(){
+        session_destroy();
+        //http://stackoverflow.com/questions/15411978/how-to-redirect-user-from-php-file-back-to-index-html-on-dreamhost
+        header('Location: index.php');
+    }
+
+    private function restoreSession(){
+        $credentials = $this->sessionTracker->getSessionCredentials();
+        $this->authorize($credentials);
     }
 
 
@@ -61,12 +95,6 @@ class Controller
             return $this->auth->isAuthorized();
         } else {
             return FALSE;
-        }
-    }
-
-    private function getSessionId(){
-        if(isset($_COOKIE['PHPSESSID'])){
-            return $_COOKIE['PHPSESSID'];
         }
     }
 }

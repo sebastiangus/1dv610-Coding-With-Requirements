@@ -17,7 +17,5 @@ $v = new \view\LoginView();
 $dtv = new DateTimeView();
 $lv = new LayoutView($v, $dtv);
 
-$controller = new \controller\Controller($v);
+$controller = new \controller\Controller($v, $lv);
 $controller->init();
-
-$lv->render();
