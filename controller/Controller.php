@@ -24,6 +24,9 @@ class Controller
     private $auth;
     private $sessionTracker;
     private $requestHandler;
+    private static $showMessageAttribute = "showMessage";
+    private static $messageAttribute = "message";
+    private static $logoutMessage = "Bye bye!";
 
     public function __construct(\view\LoginView $view, $lv)
     {
@@ -36,6 +39,7 @@ class Controller
     }
 
     public function init(){
+
         $this->requestHandler->checkForRequestAttribute();
 
         if($this->loginView->userNameOrPasswordIsset()) {
@@ -51,13 +55,12 @@ class Controller
             $this->restoreSession();
         }
 
-        if(isset($_SESSION['message'])){
-            $this->loginView->setResponseMessage($_SESSION['message']);
+        if(isset($_SESSION[self::$messageAttribute])) {
+            $this->setResponseMessageFromSessionIfNotSetBeforeAndNotRedirect();
         }
 
         $this->layoutView->render();
     }
-
 
     public function login() {
         //GET LOGIN CREDENTIALS FROM VIEW
@@ -79,12 +82,32 @@ class Controller
     }
 
     public function logout(){
-        session_destroy();
-        session_start();
-        //TODO: remove string dependency
-        $_SESSION['message'] = 'Bye bye!';
+        $this->destroySessionsAndStartNew();
+        $this->prepareLogoutMessage();
         //http://stackoverflow.com/questions/15411978/how-to-redirect-user-from-php-file-back-to-index-html-on-dreamhost
         header('Location: index.php');
+    }
+
+    private function destroySessionsAndStartNew(){
+        session_destroy();
+        session_start();
+    }
+
+    private function prepareLogoutMessage(){
+        $_SESSION[self::$messageAttribute] = self::$logoutMessage;
+        $_SESSION[self::$showMessageAttribute] = '1';
+    }
+
+    private function setResponseMessageFromSessionIfNotSetBeforeAndNotRedirect(){
+        if($_SESSION[self::$showMessageAttribute] === '1' && http_response_code() !== 302) {
+            $message = $_SESSION[self::$messageAttribute];
+            $this->loginView->setResponseMessage($message);
+            $_SESSION[self::$showMessageAttribute] = '0';
+        }
+    }
+
+    private function emptyResponseMessageFromSession(){
+        $_SESSION['message'] = '';
     }
 
     private function restoreSession(){
@@ -92,11 +115,9 @@ class Controller
         $this->authorize($credentials);
     }
 
-
     private function authorize(\model\Credentials $credentials){
         $this->auth = new \model\Authorization($credentials);
     }
-
 
     public function isLoggedIn(){
         if($this->auth !== null){
