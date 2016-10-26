@@ -101,6 +101,7 @@ class Controller
         $this->loginView->setWelcomeMessage(self::$additionalWelcomeCookieLogin);
         } catch (\Exception $exception){
             $this->loginView->setResponseMessage($exception->getMessage());
+            $this->deleteLoginCookiesIfSet();
         }
     }
 
