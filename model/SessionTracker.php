@@ -13,6 +13,7 @@ require_once('CredentialsValidator.php');
 class SessionTracker
 {
 
+
     public function saveCredentialsToSession(\model\Credentials $c){
         $_SESSION['username'] = $c->getUsername();
         $_SESSION['password'] = $c->getPassword();
@@ -27,7 +28,6 @@ class SessionTracker
             return FALSE;
         }
     }
-
 
     public function getSessionCredentials(){
         $credentials = '';

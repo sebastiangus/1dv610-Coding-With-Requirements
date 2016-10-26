@@ -13,6 +13,7 @@ use model\SessionTracker;
 use MongoDB\Driver\Server;
 
 require_once('./model/Authorization.php');
+require_once('./model/CookieAuthorization.php');
 require_once('./model/SessionTracker.php');
 require_once('RequestHandler.php');
 
@@ -27,10 +28,10 @@ class Controller
     private static $showMessageAttribute = "showMessage";
     private static $messageAttribute = "message";
     private static $logoutMessage = "Bye bye!";
+    private static $additionalWelcomeMessageRememberMe = 'and you will be remembered';
 
     public function __construct(\view\LoginView $view, $lv)
     {
-        session_start();
         $this->loginView = $view;
         $this->layoutView = $lv;
         $this->sessionTracker = new SessionTracker();
@@ -39,11 +40,22 @@ class Controller
     }
 
     public function init(){
+        session_start();
+
 
         $this->requestHandler->checkForRequestAttribute();
 
         if($this->loginView->userNameOrPasswordIsset()) {
             $this->login();
+        }
+
+        if($this->keepLoginAsCookies()){
+            $this->setLoginCookies();
+            $this->loginView->setWelcomeMessage(self::$additionalWelcomeMessageRememberMe);
+        }
+
+        if($this->isLoggedOutAndCredentialsSavedToCookies()){
+            $this->cookieAuthorize();
         }
 
         if($this->isLoggedIn()) {
@@ -52,12 +64,13 @@ class Controller
 
         if($this->sessionTracker->sessionCredentialsIsSet()) {
             $this->loginView->setToLoggedInView();
-            $this->restoreSession();
+            $this->restoreLoggedInSession();
         }
 
         if(isset($_SESSION[self::$messageAttribute])) {
             $this->setResponseMessageFromSessionIfNotSetBeforeAndNotRedirect();
         }
+
 
         $this->layoutView->render();
     }
@@ -84,13 +97,32 @@ class Controller
     public function logout(){
         $this->destroySessionsAndStartNew();
         $this->prepareLogoutMessage();
+        $this->deleteLoginCookiesIfSet();
         //http://stackoverflow.com/questions/15411978/how-to-redirect-user-from-php-file-back-to-index-html-on-dreamhost
         header('Location: index.php');
+    }
+
+    public function isLoggedIn(){
+        if($this->auth !== null){
+            return $this->auth->isAuthorized();
+        } else {
+            return FALSE;
+        }
     }
 
     private function destroySessionsAndStartNew(){
         session_destroy();
         session_start();
+    }
+
+    private function deleteLoginCookiesIfSet(){
+        //http://stackoverflow.com/questions/686155/remove-a-cookie
+        if($this->loginCookiesIsSet()){
+            unset($_COOKIE['username']);
+            setcookie('username', '', time() - 3600);
+            unset($_COOKIE['password']);
+            setcookie('password', '', time() - 3600);
+        }
     }
 
     private function prepareLogoutMessage(){
@@ -106,11 +138,7 @@ class Controller
         }
     }
 
-    private function emptyResponseMessageFromSession(){
-        $_SESSION['message'] = '';
-    }
-
-    private function restoreSession(){
+    private function restoreLoggedInSession(){
         $credentials = $this->sessionTracker->getSessionCredentials();
         $this->authorize($credentials);
     }
@@ -119,11 +147,48 @@ class Controller
         $this->auth = new \model\Authorization($credentials);
     }
 
-    public function isLoggedIn(){
-        if($this->auth !== null){
-            return $this->auth->isAuthorized();
+    private function cookieAuthorize(){
+        $username = $_COOKIE['username'];
+        $password = $_COOKIE['password'];
+        $validator = new \model\CredentialValidator($username, $password);
+        $validator->isValidInput();
+        $credentials = $validator->getCredentials();
+
+        $this->auth = new \model\CookieAuthorization($credentials);
+
+    }
+
+    private function setLoginCookies(){
+        $credentials = $this->sessionTracker->getSessionCredentials();
+        $username = $credentials->getUsername();
+        //Get hashed version of password hash.
+        $password = $this->auth->getMetaHash();
+        setcookie('username', $username);
+        setcookie('password', $password);
+    }
+
+    private function keepLoginAsCookies(){
+        if($this->loginView->keepLoginIsActive() && $this->isLoggedIn()){
+            return TRUE;
         } else {
             return FALSE;
         }
     }
+
+    private function loginCookiesIsSet(){
+        if(isset($_COOKIE['username']) && isset($_COOKIE['password'])){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    private function isLoggedOutAndCredentialsSavedToCookies(){
+        if(!$this->isLoggedIn() && $this->loginCookiesIsSet()){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
 }

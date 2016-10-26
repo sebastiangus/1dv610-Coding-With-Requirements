@@ -12,6 +12,7 @@ class LoginView {
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
     private static $responseMessage = '';
+    private $welcomeMessage = 'Welcome';
     private static $loggedInViewActive = FALSE;
     private static $username;
 
@@ -74,13 +75,15 @@ class LoginView {
 
 
 	private function generateLoggedInHTML(){
+	    $message = '';
 	    //http://stackoverflow.com/questions/4290230/php-detect-page-refresh
-        if(!isset($_SESSION['showWelcomeMessage'])){
+        if(!isset($_SESSION['showWelcomeMessage'])) {
+            $message .= $this->welcomeMessage;
             $_SESSION['showWelcomeMessage'] = FALSE;
-            return $this->generateLogoutButtonHTML('Welcome');
         } else {
-            return $this->generateLogoutButtonHTML('');
+            $message = '';
         }
+            return $this->generateLogoutButtonHTML($message);
     }
 
 
@@ -102,6 +105,10 @@ class LoginView {
         self::$responseMessage = $message;
     }
 
+    public function setWelcomeMessage(string $message) {
+        $this->welcomeMessage .= ' ' . $message;
+    }
+
 
     public function userNameOrPasswordIsset(){
         if(isset($_POST[self::$name]) || isset($_POST[self::$password])){
@@ -121,5 +128,11 @@ class LoginView {
 
     public function isloggedIn(){
         return self::$loggedInViewActive;
+    }
+
+    public function keepLoginIsActive(){
+        if(isset($_REQUEST[self::$keep])) {
+            return $_REQUEST[self::$keep];
+        }
     }
 }

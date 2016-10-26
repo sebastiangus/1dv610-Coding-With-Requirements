@@ -2,15 +2,14 @@
 /**
  * Created by PhpStorm.
  * User: sebastiangustavsson
- * Date: 2016-09-23
- * Time: 09:46
+ * Date: 2016-10-25
+ * Time: 18:52
  */
 
 namespace model;
 
-require_once('UserDAL.php');
 
-class Authorization
+class CookieAuthorization
 {
     private $userDAL;
     private static $USER_DO_NOT_EXIST_OR_WRONG_PASSWORD = "Wrong name or password";
@@ -27,7 +26,7 @@ class Authorization
         if(!$this->userDAL->userExists()) {
             throw new \Exception(self::$USER_DO_NOT_EXIST_OR_WRONG_PASSWORD);
         }
-        if(!$this->userDAL->isMatchingPasswordForUser()){
+        if(!$this->userDAL->isMatchingMetahashForUser()){
             throw new \Exception(self::$USER_DO_NOT_EXIST_OR_WRONG_PASSWORD);
         } else {
             self::$isAuthorized = TRUE;
@@ -37,9 +36,5 @@ class Authorization
 
     public function isAuthorized() {
         return self::$isAuthorized;
-    }
-
-    public function getMetaHash(){
-        return $this->userDAL->getMetaHashForUser();
     }
 }

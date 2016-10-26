@@ -84,8 +84,49 @@ class UserDAL extends DatabaseConnection
             return TRUE;
         } else {
             return FALSE;
+        }
+
+    }
+
+    public function isMatchingMetahashForUser(){
+        $password = "";
+        $user = $this->credentials->getUsername();
+        $stmt = $this->mysqli->prepare('SELECT password FROM users WHERE username=?');
+        $stmt->bind_param("s", $user);
+        $stmt->execute();
+        $stmt->bind_result($dbPassword);
+        if($stmt->fetch()) {
+            $password = $dbPassword;
+        };
+        $stmt->close();
+        //http://php.net/manual/en/function.password-verify.php
+
+        if(password_verify($password, $this->credentials->getPassword())){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function getMetaHashForUser(){
+        if($this->isMatchingPasswordForUser()){
+        $password = "";
+        $user = $this->credentials->getUsername();
+        $stmt = $this->mysqli->prepare('SELECT password FROM users WHERE username=?');
+        $stmt->bind_param("s", $user);
+        $stmt->execute();
+        $stmt->bind_result($dbPassword);
+
+        if($stmt->fetch()){
+            $password = $dbPassword;
         };
 
+        $stmt->close();
+
+        return password_hash($password, PASSWORD_DEFAULT);
+        } else {
+            throw new \Exception('Please authorize to access metaHash');
+        }
     }
 
 
