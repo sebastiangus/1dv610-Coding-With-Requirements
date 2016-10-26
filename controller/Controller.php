@@ -107,7 +107,7 @@ class Controller
         $this->prepareLogoutMessage();
         $this->deleteLoginCookiesIfSet();
         //http://stackoverflow.com/questions/15411978/how-to-redirect-user-from-php-file-back-to-index-html-on-dreamhost
-        header('Location: index.php');
+        //header('Location: index.php');
     }
 
     public function isLoggedIn(){
