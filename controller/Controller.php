@@ -56,8 +56,7 @@ class Controller
         }
 
         if($this->isLoggedOutAndCredentialsSavedToCookies()){
-            $this->cookieAuthorize();
-            $this->loginView->setWelcomeMessage(self::$additionalWelcomeCookieLogin);
+            $this->cookieLogin();
         }
 
         if($this->isLoggedIn()) {
@@ -92,6 +91,15 @@ class Controller
         } catch (\Exception $exception) {
             //SET CURRENCT USERNAME IN VIEW, MAKES IT POSSIBLE TO KEEP SAME INPUT IN USERNAME FIELD AT NEXT RENDERING.
             $this->loginView->setUsername();
+            $this->loginView->setResponseMessage($exception->getMessage());
+        }
+    }
+
+    private function cookieLogin(){
+        try{
+        $this->cookieAuthorize();
+        $this->loginView->setWelcomeMessage(self::$additionalWelcomeCookieLogin);
+        } catch (\Exception $exception){
             $this->loginView->setResponseMessage($exception->getMessage());
         }
     }

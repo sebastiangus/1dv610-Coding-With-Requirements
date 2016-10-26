@@ -12,7 +12,7 @@ namespace model;
 class CookieAuthorization
 {
     private $userDAL;
-    private static $USER_DO_NOT_EXIST_OR_WRONG_PASSWORD = "Wrong name or password";
+    private static $USER_DO_NOT_EXIST_OR_WRONG_PASSWORD = "Wrong information in cookies";
     private static $isAuthorized = FALSE;
 
 
