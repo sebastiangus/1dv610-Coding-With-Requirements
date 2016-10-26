@@ -43,7 +43,6 @@ class Controller
     public function init(){
         session_start();
 
-
         $this->requestHandler->checkForRequestAttribute();
 
         if($this->loginView->userNameOrPasswordIsset()) {
@@ -64,14 +63,12 @@ class Controller
         }
 
         if($this->sessionTracker->sessionCredentialsIsSet()) {
-            $this->loginView->setToLoggedInView();
             $this->restoreLoggedInSession();
         }
 
         if(isset($_SESSION[self::$messageAttribute])) {
             $this->setResponseMessageFromSessionIfNotSetBeforeAndNotRedirect();
         }
-
 
         $this->layoutView->render();
     }
@@ -150,8 +147,11 @@ class Controller
     }
 
     private function restoreLoggedInSession(){
-        $credentials = $this->sessionTracker->getSessionCredentials();
-        $this->authorize($credentials);
+            $credentials = $this->sessionTracker->getSessionCredentials();
+        if($this->sessionTracker->sessionIsInitatedWithSameUserAgent()){
+            $this->authorize($credentials);
+            $this->loginView->setToLoggedInView();
+        }
     }
 
     private function authorize(\model\Credentials $credentials){
@@ -164,9 +164,7 @@ class Controller
         $validator = new \model\CredentialValidator($username, $password);
         $validator->isValidInput();
         $credentials = $validator->getCredentials();
-
         $this->auth = new \model\CookieAuthorization($credentials);
-
     }
 
     private function setLoginCookies(){

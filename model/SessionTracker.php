@@ -13,12 +13,26 @@ require_once('CredentialsValidator.php');
 class SessionTracker
 {
 
-
     public function saveCredentialsToSession(\model\Credentials $c){
         $_SESSION['username'] = $c->getUsername();
         $_SESSION['password'] = $c->getPassword();
         $_SESSION['remoteAddr'] = $this->getRemoteAddr();
         $_SESSION['loggedIn'] = TRUE;
+        $this->setUserAgentToSession();
+    }
+
+    public function setUserAgentToSession(){
+        $_SESSION['userAgent'] = $_SERVER['HTTP_USER_AGENT'];
+    }
+
+    public function sessionIsInitatedWithSameUserAgent(){
+        if(isset($_SERVER['HTTP_USER_AGENT']) && isset($_SESSION['userAgent'])){
+            if($_SERVER['HTTP_USER_AGENT'] === $_SESSION['userAgent']) {
+                return TRUE;
+            }
+        } else {
+            return FALSE;
+        }
     }
 
     public function isLoggedInSession(){
@@ -29,7 +43,7 @@ class SessionTracker
         }
     }
 
-    public function getSessionCredentials(){
+    public function getSessionCredentials() {
         $credentials = '';
         $password = '';
         $username = '';
@@ -39,9 +53,7 @@ class SessionTracker
             $username = $_SESSION['username'];
             $credentials = new \model\CredentialValidator($username, $password);
         }
-
         return $credentials;
-
     }
 
     private function isSameRemoteAddr($currentAddr){
@@ -53,7 +65,6 @@ class SessionTracker
             return FALSE;
         }
     }
-
 
     private function getRemoteAddr(){
         if(isset($_SERVER['REMOTE_ADDR'])){
