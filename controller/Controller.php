@@ -28,7 +28,8 @@ class Controller
     private static $showMessageAttribute = "showMessage";
     private static $messageAttribute = "message";
     private static $logoutMessage = "Bye bye!";
-    private static $additionalWelcomeMessageRememberMe = 'and you will be remembered';
+    private static $additionalWelcomeKeepLoggedIn = 'and you will be remembered';
+    private static $additionalWelcomeCookieLogin = 'back with cookie';
 
     public function __construct(\view\LoginView $view, $lv)
     {
@@ -51,11 +52,12 @@ class Controller
 
         if($this->keepLoginAsCookies()){
             $this->setLoginCookies();
-            $this->loginView->setWelcomeMessage(self::$additionalWelcomeMessageRememberMe);
+            $this->loginView->setWelcomeMessage(self::$additionalWelcomeKeepLoggedIn);
         }
 
         if($this->isLoggedOutAndCredentialsSavedToCookies()){
             $this->cookieAuthorize();
+            $this->loginView->setWelcomeMessage(self::$additionalWelcomeCookieLogin);
         }
 
         if($this->isLoggedIn()) {
