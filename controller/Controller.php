@@ -37,7 +37,6 @@ class Controller
         $this->layoutView = $lv;
         $this->sessionTracker = new SessionTracker();
         $this->requestHandler = new RequestHandler($this);
-
     }
 
     public function init(){
@@ -73,7 +72,7 @@ class Controller
         $this->layoutView->render();
     }
 
-    public function login() {
+    private function login() {
         //GET LOGIN CREDENTIALS FROM VIEW
         $username = $this->loginView->getRequestUserName();
         $password = $this->loginView->getRequestPassword();
@@ -102,15 +101,7 @@ class Controller
         }
     }
 
-    public function logout(){
-        $this->destroySessionsAndStartNew();
-        $this->prepareLogoutMessage();
-        $this->deleteLoginCookiesIfSet();
-        //http://stackoverflow.com/questions/15411978/how-to-redirect-user-from-php-file-back-to-index-html-on-dreamhost
-        //header('Location: index.php');
-    }
-
-    public function isLoggedIn(){
+    private function isLoggedIn(){
         if($this->auth !== null){
             return $this->auth->isAuthorized();
         } else {
@@ -118,32 +109,16 @@ class Controller
         }
     }
 
+    public function logout(){
+        $this->destroySessionsAndStartNew();
+        $this->loginView->setResponseMessage('Bye bye!');
+        $this->deleteLoginCookiesIfSet();
+        //http://stackoverflow.com/questions/15411978/how-to-redirect-user-from-php-file-back-to-index-html-on-dreamhost
+    }
+
     private function destroySessionsAndStartNew(){
         session_destroy();
         session_start();
-    }
-
-    private function deleteLoginCookiesIfSet(){
-        //http://stackoverflow.com/questions/686155/remove-a-cookie
-        if($this->loginCookiesIsSet()){
-            unset($_COOKIE['username']);
-            setcookie('username', '', time() - 3600);
-            unset($_COOKIE['password']);
-            setcookie('password', '', time() - 3600);
-        }
-    }
-
-    private function prepareLogoutMessage(){
-        $_SESSION[self::$messageAttribute] = self::$logoutMessage;
-        $_SESSION[self::$showMessageAttribute] = '1';
-    }
-
-    private function setResponseMessageFromSessionIfNotSetBeforeAndNotRedirect(){
-        if($_SESSION[self::$showMessageAttribute] === '1' && http_response_code() !== 302) {
-            $message = $_SESSION[self::$messageAttribute];
-            $this->loginView->setResponseMessage($message);
-            $_SESSION[self::$showMessageAttribute] = '0';
-        }
     }
 
     private function restoreLoggedInSession(){
@@ -174,6 +149,16 @@ class Controller
         $password = $this->auth->getMetaHash();
         setcookie('username', $username);
         setcookie('password', $password);
+    }
+
+    private function deleteLoginCookiesIfSet(){
+        //http://stackoverflow.com/questions/686155/remove-a-cookie
+        if($this->loginCookiesIsSet()){
+            unset($_COOKIE['username']);
+            setcookie('username', '', time() - 3600);
+            unset($_COOKIE['password']);
+            setcookie('password', '', time() - 3600);
+        }
     }
 
     private function keepLoginAsCookies(){

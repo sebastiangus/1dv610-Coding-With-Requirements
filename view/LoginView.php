@@ -32,7 +32,6 @@ class LoginView {
 		return $response;
 	}
 
-
 	/**
 	* Generate HTML code on the output buffer for the logout button
 	* @param $message, String output message
@@ -51,6 +50,7 @@ class LoginView {
 	* @param $message, String output message the message you want to render/display to the user.
 	* @return  HTML formatted string
 	*/
+
 	private function generateLoginFormHTML($message) {
 		return '
 			<form action="index.php" method="post"> 
@@ -73,7 +73,6 @@ class LoginView {
 			';
 	}
 
-
 	private function generateLoggedInHTML(){
 	    $message = '';
 	    //http://stackoverflow.com/questions/4290230/php-detect-page-refresh
@@ -86,20 +85,17 @@ class LoginView {
             return $this->generateLogoutButtonHTML($message);
     }
 
-
     public function getRequestUserName() {
         if(isset($_REQUEST[self::$name])) {
             return $_REQUEST[self::$name];
         }
     }
 
-
     public function  getRequestPassword() {
         if(isset($_REQUEST[self::$password])) {
             return $_REQUEST[self::$password];
         }
     }
-
 
     public function setResponseMessage(string $message) {
         self::$responseMessage = $message;
@@ -108,7 +104,6 @@ class LoginView {
     public function setWelcomeMessage(string $message) {
         $this->welcomeMessage .= ' ' . $message;
     }
-
 
     public function userNameOrPasswordIsset(){
         if(isset($_POST[self::$name]) || isset($_POST[self::$password])){
