@@ -185,8 +185,8 @@ class LoginView {
     }
 
     public function setLoginCookies($username, $password) {
-        setcookie(self::$cookieName, $username);
-        setcookie(self::$cookiePassword, $password);
+        setcookie(self::$cookieName, $username, time() + 3600);
+        setcookie(self::$cookiePassword, $password, time() + 3600);
     }
 
     public function deleteLoginCookies(){
