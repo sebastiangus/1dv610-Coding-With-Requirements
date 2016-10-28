@@ -136,8 +136,8 @@ class Controller
     }
 
     private function cookieAuthorize(){
-        $username = $_COOKIE['username'];
-        $password = $_COOKIE['password'];
+        $username = $this->loginView->getCookieName();
+        $password = $this->loginView->getCookiePassword();
         $validator = new \model\CredentialValidator($username, $password);
         $validator->isValidInput();
         $credentials = $validator->getCredentials();
@@ -149,17 +149,13 @@ class Controller
         $username = $credentials->getUsername();
         //Get hashed version of password hash.
         $password = $this->auth->getMetaHash();
-        setcookie('username', $username);
-        setcookie('password', $password);
+        $this->loginView->setLoginCookies($username, $password);
     }
 
     private function deleteLoginCookiesIfSet(){
         //http://stackoverflow.com/questions/686155/remove-a-cookie
-        if($this->loginCookiesIsSet()){
-            unset($_COOKIE['username']);
-            setcookie('username', '', time() - 3600);
-            unset($_COOKIE['password']);
-            setcookie('password', '', time() - 3600);
+        if($this->loginView->loginCookiesIsSet()){
+            $this->loginView->deleteLoginCookies();
         }
     }
 
@@ -171,16 +167,9 @@ class Controller
         }
     }
 
-    private function loginCookiesIsSet(){
-        if(isset($_COOKIE['username']) && isset($_COOKIE['password'])){
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
 
     private function isLoggedOutAndCredentialsSavedToCookies(){
-        if(!$this->isLoggedIn() && $this->loginCookiesIsSet()){
+        if(!$this->isLoggedIn() && $this->loginView->loginCookiesIsSet()){
             return TRUE;
         } else {
             return FALSE;

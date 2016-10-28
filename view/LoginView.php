@@ -177,6 +177,35 @@ class LoginView {
         $_SESSION[self::$showMessageAttribute] = TRUE;
     }
 
+    public function setLoginCookies($username, $password) {
+        setcookie(self::$cookieName, $username);
+        setcookie(self::$cookiePassword, $password);
+    }
+
+    public function deleteLoginCookies(){
+        //http://stackoverflow.com/questions/686155/remove-a-cookie
+        unset($_COOKIE[self::$cookieName]);
+        setcookie(self::$cookieName, '', time() - 3600);
+        unset($_COOKIE[self::$cookiePassword]);
+        setcookie(self::$cookiePassword, '', time() - 3600);
+    }
+
+    public function getCookieName() {
+        return $_COOKIE[self::$cookieName];
+    }
+
+    public function getCookiePassword() {
+        return $_COOKIE[self::$cookiePassword];
+    }
+
+    public function loginCookiesIsSet(){
+        if(isset($_COOKIE[self::$cookieName]) && isset($_COOKIE[self::$cookiePassword])){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
 
 
 
