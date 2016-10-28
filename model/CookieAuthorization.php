@@ -8,11 +8,12 @@
 
 namespace model;
 
+require_once('./model/CustomExceptions/CookieLoginException.php');
+
 
 class CookieAuthorization
 {
     private $userDAL;
-    private static $USER_DO_NOT_EXIST_OR_WRONG_PASSWORD = "Wrong information in cookies";
     private static $isAuthorized = FALSE;
 
 
@@ -24,10 +25,10 @@ class CookieAuthorization
 
     private function authFlow() {
         if(!$this->userDAL->userExists()) {
-            throw new \Exception(self::$USER_DO_NOT_EXIST_OR_WRONG_PASSWORD);
+            throw new CookieLoginException();
         }
         if(!$this->userDAL->isMatchingMetahashForUser()){
-            throw new \Exception(self::$USER_DO_NOT_EXIST_OR_WRONG_PASSWORD);
+            throw new CookieLoginException();
         } else {
             self::$isAuthorized = TRUE;
         }

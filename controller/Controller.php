@@ -89,7 +89,7 @@ class Controller
         $this->cookieAuthorize();
         $this->loginView->setWelcomeMessage(self::$additionalWelcomeCookieLogin);
         } catch (\Exception $exception){
-            $this->loginView->setResponseMessageFromException($exception->getMessage());
+            $this->loginView->setResponseMessageFromException($exception);
             $this->deleteLoginCookiesIfSet();
         }
     }

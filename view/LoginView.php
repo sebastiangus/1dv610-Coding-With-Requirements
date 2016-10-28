@@ -2,6 +2,7 @@
 
 namespace view;
 
+use model\CookieLoginException;
 use model\PasswordException;
 use model\UsernameException;
 use model\WrongUsernameOrPasswordException;
@@ -9,6 +10,7 @@ use model\WrongUsernameOrPasswordException;
 require_once('./model/CustomExceptions/PasswordException.php');
 require_once('./model/CustomExceptions/UsernameException.php');
 require_once('./model/CustomExceptions/WrongUsernameOrPasswordException.php');
+require_once('./model/CustomExceptions/CookieLoginException.php');
 
 class LoginView {
 	private static $login = 'LoginView::Login';
@@ -112,6 +114,7 @@ class LoginView {
     }
 
     public function setResponseMessageFromException(\Exception $exception) {
+
         $message = '';
         try {
             throw $exception;
@@ -121,6 +124,8 @@ class LoginView {
             $message = 'Username is missing';
         } catch (WrongUsernameOrPasswordException $e){
             $message = 'Wrong name or password';
+        } catch (CookieLoginException $e) {
+            $message = 'Wrong information in cookies';
         } finally {
             $this->responseMessage = $message;
         }
