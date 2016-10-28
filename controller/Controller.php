@@ -15,7 +15,6 @@ use MongoDB\Driver\Server;
 require_once('./model/Authorization.php');
 require_once('./model/CookieAuthorization.php');
 require_once('./model/SessionTracker.php');
-require_once('RequestHandler.php');
 
 class Controller
 {
@@ -27,7 +26,6 @@ class Controller
     private $requestHandler;
     private static $showMessageAttribute = "showMessage";
     private static $messageAttribute = "message";
-    private static $logoutMessage = "Bye bye!";
     private static $additionalWelcomeKeepLoggedIn = 'and you will be remembered';
     private static $additionalWelcomeCookieLogin = 'back with cookie';
 
@@ -36,16 +34,17 @@ class Controller
         $this->loginView = $view;
         $this->layoutView = $lv;
         $this->sessionTracker = new SessionTracker();
-        $this->requestHandler = new RequestHandler($this);
     }
 
     public function init(){
         session_start();
 
-        $this->requestHandler->checkForRequestAttribute();
-
         if($this->loginView->userNameOrPasswordIsset()) {
             $this->login();
+        }
+
+        if($this->isLoggingOut()){
+            $this->logout();
         }
 
         if($this->keepLoginAsCookies()){
@@ -63,10 +62,6 @@ class Controller
 
         if($this->sessionTracker->sessionCredentialsIsSet()) {
             $this->restoreLoggedInSession();
-        }
-
-        if(isset($_SESSION[self::$messageAttribute])) {
-            $this->setResponseMessageFromSessionIfNotSetBeforeAndNotRedirect();
         }
 
         $this->layoutView->render();
@@ -109,16 +104,25 @@ class Controller
         }
     }
 
-    public function logout(){
-        $this->destroySessionsAndStartNew();
-        $this->loginView->setResponseMessage('Bye bye!');
-        $this->deleteLoginCookiesIfSet();
-        //http://stackoverflow.com/questions/15411978/how-to-redirect-user-from-php-file-back-to-index-html-on-dreamhost
+    private function isLoggingOut(){
+        if($this->loginView->logoutIsPressed() && !$this->isLoggedIn()){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
-    private function destroySessionsAndStartNew(){
-        session_destroy();
-        session_start();
+    public function logout(){
+        $this->deleteLoginCookiesIfSet();
+        $this->destroySessionsAndStartNewIfLoggedIn();
+        $this->loginView->showLoginStateResponseMessageOnce();
+    }
+
+    private function destroySessionsAndStartNewIfLoggedIn(){
+        if($this->sessionTracker->isLoggedInSession()){
+            session_destroy();
+            session_start();
+        }
     }
 
     private function restoreLoggedInSession(){

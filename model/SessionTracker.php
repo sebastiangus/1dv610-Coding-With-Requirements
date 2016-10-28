@@ -36,8 +36,10 @@ class SessionTracker
     }
 
     public function isLoggedInSession(){
-        if($_SESSION['loggedIn']){
-            return TRUE;
+        if(isset($_SESSION['loggedIn'])){
+            if($_SESSION['loggedIn']){
+                return TRUE;
+            }
         } else {
             return FALSE;
         }

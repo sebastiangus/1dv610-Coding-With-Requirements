@@ -11,7 +11,9 @@ class LoginView {
 	private static $cookiePassword = 'LoginView::CookiePassword';
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
-    private static $responseMessage = '';
+    private static $showWelcomeMessageAttribute = 'showWelcomeMessage';
+    private static $showMessageAttribute = 'showMessage';
+    private $responseMessage = '';
     private $welcomeMessage = 'Welcome';
     private static $loggedInViewActive = FALSE;
     private static $username;
@@ -25,7 +27,7 @@ class LoginView {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-        $response = $this->generateLoginFormHTML(self::$responseMessage);
+        $response = $this->generateLoginFormHTML($this->responseMessage);
         if(self::$loggedInViewActive) {
             $response = $this->generateLoggedInHTML();
         }
@@ -76,9 +78,9 @@ class LoginView {
 	private function generateLoggedInHTML(){
 	    $message = '';
 	    //http://stackoverflow.com/questions/4290230/php-detect-page-refresh
-        if(!isset($_SESSION['showWelcomeMessage'])) {
+        if(!isset($_SESSION[self::$showWelcomeMessageAttribute])) {
             $message .= $this->welcomeMessage;
-            $_SESSION['showWelcomeMessage'] = FALSE;
+            $_SESSION[self::$showWelcomeMessageAttribute] = FALSE;
         } else {
             $message = '';
         }
@@ -98,7 +100,7 @@ class LoginView {
     }
 
     public function setResponseMessage(string $message) {
-        self::$responseMessage = $message;
+        $this->responseMessage = $message;
     }
 
     public function setWelcomeMessage(string $message) {
@@ -130,4 +132,29 @@ class LoginView {
             return $_REQUEST[self::$keep];
         }
     }
+
+    public function logoutIsPressed()
+    {
+        if (isset($_REQUEST[self::$logout])) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function showLoginStateResponseMessageOnce(){
+
+        if(!isset($_SESSION[self::$showMessageAttribute])){
+            if($this->logoutIsPressed()){
+                $this->setResponseMessage('Bye bye!');
+            }
+        } else {
+            $this->setResponseMessage('');
+        }
+        $_SESSION[self::$showMessageAttribute] = TRUE;
+    }
+
+
+
+
 }
