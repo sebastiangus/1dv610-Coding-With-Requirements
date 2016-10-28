@@ -126,6 +126,8 @@ class LoginView {
             $message = 'Wrong name or password';
         } catch (CookieLoginException $e) {
             $message = 'Wrong information in cookies';
+        } catch (\Exception $e) {
+            $message = 'Other exception';
         } finally {
             $this->responseMessage = $message;
         }

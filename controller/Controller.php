@@ -136,12 +136,16 @@ class Controller
     }
 
     private function cookieAuthorize(){
+        try{
         $username = $this->loginView->getCookieName();
         $password = $this->loginView->getCookiePassword();
         $validator = new \model\CredentialValidator($username, $password);
         $validator->isValidInput();
         $credentials = $validator->getCredentials();
         $this->auth = new \model\CookieAuthorization($credentials);
+        } catch (\Exception $exception) {
+            $this->loginView->setResponseMessageFromException($exception);
+        }
     }
 
     private function setLoginCookies(){
