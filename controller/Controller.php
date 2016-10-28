@@ -10,7 +10,6 @@ namespace controller;
 
 use model\CredentialValidator;
 use model\SessionTracker;
-use MongoDB\Driver\Server;
 
 require_once('./model/Authorization.php');
 require_once('./model/CookieAuthorization.php');
@@ -80,9 +79,8 @@ class Controller
             $this->authorize($credentials);
             $this->sessionTracker->saveCredentialsToSession($credentials);
         } catch (\Exception $exception) {
-            //SET CURRENCT USERNAME IN VIEW, MAKES IT POSSIBLE TO KEEP SAME INPUT IN USERNAME FIELD AT NEXT RENDERING.
-            $this->loginView->setUsername();
-            $this->loginView->setResponseMessage($exception->getMessage());
+            $this->loginView->setCurrentUsernameToBeViewed();
+            $this->loginView->setResponseMessageFromException($exception);
         }
     }
 
@@ -91,7 +89,7 @@ class Controller
         $this->cookieAuthorize();
         $this->loginView->setWelcomeMessage(self::$additionalWelcomeCookieLogin);
         } catch (\Exception $exception){
-            $this->loginView->setResponseMessage($exception->getMessage());
+            $this->loginView->setResponseMessageFromException($exception->getMessage());
             $this->deleteLoginCookiesIfSet();
         }
     }

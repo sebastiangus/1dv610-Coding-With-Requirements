@@ -2,6 +2,14 @@
 
 namespace view;
 
+use model\PasswordException;
+use model\UsernameException;
+use model\WrongUsernameOrPasswordException;
+
+require_once('./model/CustomExceptions/PasswordException.php');
+require_once('./model/CustomExceptions/UsernameException.php');
+require_once('./model/CustomExceptions/WrongUsernameOrPasswordException.php');
+
 class LoginView {
 	private static $login = 'LoginView::Login';
 	private static $logout = 'LoginView::Logout';
@@ -99,8 +107,23 @@ class LoginView {
         }
     }
 
-    public function setResponseMessage(string $message) {
+    public function setResponseMessage($message){
         $this->responseMessage = $message;
+    }
+
+    public function setResponseMessageFromException(\Exception $exception) {
+        $message = '';
+        try {
+            throw $exception;
+        } catch (PasswordException $e) {
+            $message = 'Password is missing';
+        } catch (UsernameException $e) {
+            $message = 'Username is missing';
+        } catch (WrongUsernameOrPasswordException $e){
+            $message = 'Wrong name or password';
+        } finally {
+            $this->responseMessage = $message;
+        }
     }
 
     public function setWelcomeMessage(string $message) {
@@ -115,7 +138,7 @@ class LoginView {
         }
     }
 
-    public function setUsername(){
+    public function setCurrentUsernameToBeViewed(){
         self::$username = $_REQUEST[self::$name];
     }
 

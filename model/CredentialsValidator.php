@@ -8,11 +8,11 @@
 namespace model;
 
 require_once('Credentials.php');
+require_once('./model/CustomExceptions/UsernameException.php');
+require_once('./model/CustomExceptions/PasswordException.php');
+
 
 class CredentialValidator extends Credentials {
-    private static $usernameMissingResponse = 'Username is missing';
-    private static $passwordMissingResponse = 'Password is missing';
-    private $response;
     private $credentialsValidated = FALSE;
     private $credentials;
 
@@ -24,13 +24,12 @@ class CredentialValidator extends Credentials {
 
     public function isValidInput() {
         if(!$this->isUsernameValidFormat()) {
-            throw new \Exception(self::$usernameMissingResponse);
+            throw new UsernameException();
         }
         if(!$this->isPasswordValidFormat()) {
-            throw new \Exception(self::$passwordMissingResponse);
+            throw new PasswordException();
         }
 
-        $this->response = 'Validated format on credentials';
         $this->credentialsValidated = TRUE;
         return TRUE;
     }
@@ -64,10 +63,6 @@ class CredentialValidator extends Credentials {
         }
     }
 
-
-    public function getValidationResponseMessage(){
-        return $this->response;
-    }
 
 
     public function getCredentials() {

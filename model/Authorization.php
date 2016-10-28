@@ -9,11 +9,11 @@
 namespace model;
 
 require_once('UserDAL.php');
+require_once('./model/CustomExceptions/WrongUsernameOrPasswordException.php');
 
 class Authorization
 {
     private $userDAL;
-    private static $USER_DO_NOT_EXIST_OR_WRONG_PASSWORD = "Wrong name or password";
     private static $isAuthorized = FALSE;
 
 
@@ -25,10 +25,10 @@ class Authorization
 
     private function authFlow() {
         if(!$this->userDAL->userExists()) {
-            throw new \Exception(self::$USER_DO_NOT_EXIST_OR_WRONG_PASSWORD);
+            throw new WrongUsernameOrPasswordException();
         }
         if(!$this->userDAL->isMatchingPasswordForUser()){
-            throw new \Exception(self::$USER_DO_NOT_EXIST_OR_WRONG_PASSWORD);
+            throw new WrongUsernameOrPasswordException();
         } else {
             self::$isAuthorized = TRUE;
         }
