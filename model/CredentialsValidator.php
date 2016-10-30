@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sebastiangustavsson
- * Date: 2016-09-21
- * Time: 11:40
- */
+
 namespace model;
 
 require_once('Credentials.php');
@@ -16,13 +11,11 @@ class CredentialValidator extends Credentials {
     private $credentialsValidated = FALSE;
     private $credentials;
 
-
     function __construct(string $user, string $pass) {
         $this->credentials = new Credentials($user, $pass);
     }
 
-
-    public function isValidInput() {
+    public function throwExceptionIfInvalidUserCredentials() {
         if(!$this->isUsernameValidFormat()) {
             throw new UsernameException();
         }
@@ -34,8 +27,6 @@ class CredentialValidator extends Credentials {
         return TRUE;
     }
 
-
-
     private function isUsernameValidFormat() : bool {
         if($this->isInputStringAndLongerThanZero($this->credentials->getUsername())) {
             return TRUE;
@@ -43,7 +34,6 @@ class CredentialValidator extends Credentials {
             return FALSE;
         }
     }
-
 
     private function  isPasswordValidFormat() : bool {
         if($this->isInputStringAndLongerThanZero($this->credentials->getPassword())) {
@@ -53,7 +43,6 @@ class CredentialValidator extends Credentials {
         }
     }
 
-
     private function isInputStringAndLongerThanZero($input) : bool {
 
         if (is_string($input) && strlen($input) > 0) {
@@ -62,8 +51,6 @@ class CredentialValidator extends Credentials {
             return FALSE;
         }
     }
-
-
 
     public function getCredentials() {
         if($this->credentialsValidated){

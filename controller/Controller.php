@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sebastiangustavsson
- * Date: 2016-09-22
- * Time: 11:27
- */
 
 namespace controller;
 
@@ -24,9 +18,6 @@ class Controller
     private $sessionTracker;
     private $requestHandler;
     private static $showMessageAttribute = "showMessage";
-    private static $messageAttribute = "message";
-    private static $additionalWelcomeKeepLoggedIn = 'and you will be remembered';
-    private static $additionalWelcomeCookieLogin = 'back with cookie';
 
     public function __construct(\view\LoginView $view, $lv)
     {
@@ -48,7 +39,7 @@ class Controller
 
         if($this->keepLoginAsCookies()){
             $this->setLoginCookies();
-            $this->loginView->setWelcomeMessage(self::$additionalWelcomeKeepLoggedIn);
+            $this->loginView->setWelcomeMessageYouWillBeRememberd();
         }
 
         if($this->isLoggedOutAndCredentialsSavedToCookies()){
@@ -66,15 +57,14 @@ class Controller
         $this->layoutView->render();
     }
 
-    private function login() {
-        //GET LOGIN CREDENTIALS FROM VIEW
+    private function login(){
         $username = $this->loginView->getRequestUserName();
         $password = $this->loginView->getRequestPassword();
-
         $validator = new \model\CredentialValidator($username, $password);
 
+
         try {
-            $validator->isValidInput();
+            $validator->throwExceptionIfInvalidUserCredentials();
             $credentials = $validator->getCredentials();
             $this->authorize($credentials);
             $this->sessionTracker->saveCredentialsToSession($credentials);
@@ -87,7 +77,7 @@ class Controller
     private function cookieLogin(){
         try{
         $this->cookieAuthorize();
-        $this->loginView->setWelcomeMessage(self::$additionalWelcomeCookieLogin);
+        $this->loginView->setWelcomeMessageLoggedInWithCookie();
         } catch (\Exception $exception){
             $this->loginView->setResponseMessageFromException($exception);
             $this->deleteLoginCookiesIfSet();
@@ -140,7 +130,7 @@ class Controller
         $username = $this->loginView->getCookieName();
         $password = $this->loginView->getCookiePassword();
         $validator = new \model\CredentialValidator($username, $password);
-        $validator->isValidInput();
+        $validator->throwExceptionIfInvalidUserCredentials();
         $credentials = $validator->getCredentials();
         $this->auth = new \model\CookieAuthorization($credentials);
         } catch (\Exception $exception) {
@@ -151,7 +141,6 @@ class Controller
     private function setLoginCookies(){
         $credentials = $this->sessionTracker->getSessionCredentials();
         $username = $credentials->getUsername();
-        //Get hashed version of password hash.
         $password = $this->auth->getMetaHash();
         $this->loginView->setLoginCookies($username, $password);
     }
@@ -170,7 +159,6 @@ class Controller
             return FALSE;
         }
     }
-
 
     private function isLoggedOutAndCredentialsSavedToCookies(){
         if(!$this->isLoggedIn() && $this->loginView->loginCookiesIsSet()){

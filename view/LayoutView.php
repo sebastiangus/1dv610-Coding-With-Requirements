@@ -20,7 +20,7 @@ class LayoutView {
         </head>
         <body>
           <h1>Assignment 2</h1>
-          ' . $this->renderIsLoggedIn() . '
+          ' . $this->renderLoginState() . '
           
           <div class="container">
               ' . $this->loginView->response() . '
@@ -32,7 +32,7 @@ class LayoutView {
     ';
   }
   
-  private function renderIsLoggedIn() {
+  private function renderLoginState() {
     if ($this->loginView->isLoggedIn()) {
       return '<h2>Logged in</h2>';
     }

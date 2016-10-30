@@ -25,6 +25,8 @@ class LoginView {
     private static $showMessageAttribute = 'showMessage';
     private $responseMessage = '';
     private $welcomeMessage = 'Welcome';
+    private static $additionalWelcomeKeepLoggedIn = 'and you will be remembered';
+    private static $additionalWelcomeCookieLogin = 'back with cookie';
     private static $loggedInViewActive = FALSE;
     private static $username;
 
@@ -135,6 +137,14 @@ class LoginView {
 
     public function setWelcomeMessage(string $message) {
         $this->welcomeMessage .= ' ' . $message;
+    }
+
+    public function setWelcomeMessageYouWillBeRememberd(){
+        $this->setWelcomeMessage(self::$additionalWelcomeKeepLoggedIn);
+    }
+
+    public function setWelcomeMessageLoggedInWithCookie(){
+        $this->setWelcomeMessage(self::$additionalWelcomeCookieLogin);
     }
 
     public function userNameOrPasswordIsset(){
