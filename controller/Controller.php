@@ -16,8 +16,6 @@ class Controller
     private $userDB;
     private $auth;
     private $sessionTracker;
-    private $requestHandler;
-    private static $showMessageAttribute = "showMessage";
 
     public function __construct(\view\LoginView $view, $lv)
     {

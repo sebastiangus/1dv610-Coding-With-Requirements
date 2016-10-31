@@ -101,13 +101,13 @@ class LoginView {
 
     public function getRequestUserName() {
         if(isset($_REQUEST[self::$name])) {
-            return $_REQUEST[self::$name];
+            return strip_tags($_REQUEST[self::$name]);
         }
     }
 
     public function  getRequestPassword() {
         if(isset($_REQUEST[self::$password])) {
-            return $_REQUEST[self::$password];
+            return strip_tags($_REQUEST[self::$password]);
         }
     }
 
